@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtro Fiestas Patrias</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mind-ar-js/face/dist/mindar-face.prod.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mind-ar-js/face/dist/mindar-face.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="mindarContainer">
+        <video id="video" autoplay></video>
+        <canvas id="overlay" width="640" height="480"></canvas>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const mindarThree = new window.MINDAR.Three({ container: document.getElementById("mindarContainer") });
+        const {renderer, scene, camera} = mindarThree;
+
+        const faceTracker = new MINDAR.Face.FaceTracker();
+        mindarThree.addFaceTracker(faceTracker);
+
+        // Cargar y añadir el sombrero
+        const loader = new THREE.TextureLoader();
+        loader.load('sombrero.png', (texture) => {
+            const sombreroMaterial = new THREE.SpriteMaterial({ map: texture });
+            const sombrero = new THREE.Sprite(sombreroMaterial);
+            sombrero.scale.set(2, 1, 1); // Escala del sombrero
+            sombrero.position.set(0, 1.5, -2); // Posición del sombrero
+            faceTracker.add(sombrero);
+        });
+
+        // Cargar y añadir la bandera
+        loader.load('bandera.png', (texture) => {
+            const banderaMaterial = new THREE.SpriteMaterial({ map: texture });
+            const bandera = new THREE.Sprite(banderaMaterial);
+            bandera.scale.set(1.5, 1, 1); // Escala de la bandera
+            bandera.position.set(0, -0.5, -1.5); // Posición de la bandera
+            faceTracker.add(bandera);
+        });
+
+        const renderLoop = () => {
+            renderer.render(scene, camera);
+            requestAnimationFrame(renderLoop);
+        };
+        renderLoop();
+    </script>
+</body>
+</html>
